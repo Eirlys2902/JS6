@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS6</title>
+    <title>May Tinh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,45 +13,57 @@
             margin: 0;
             box-sizing: border-box;
             outline: 0;
-            transition: all 0.5s ease;
+            transition: all 0.2s ease;
         }
         body {
             font-family: 'Nunito', sans-serif;
-            background-image: linear-gradient(to bottom right, rgb(124, 107, 187), rgb(226, 162, 208));
+            background-image: linear-gradient(to bottom right, rgb(168, 148, 238), rgb(248, 160, 223));
             min-height: 100vh;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .container {
-            min-height: 100vh;
-            width: 100vw;
-            display: grid;
-            place-items: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
             .cal {
                 position: relative;
-                height: auto;
-                width: auto;
+                width: 90%;
+                max-width: 350px; 
                 padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 0 30px #000;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
                 background-color: #ffffff;
+                
                 .tog {
                     position: absolute;
-                    top: 30px;
-                    right: 30px;
+                    top: 20px;
+                    right: 20px;
                     color: #ffffff;
                     cursor: pointer;
                     z-index: 1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 30px;
+                    height: 30px;
                 }
                 .tog.active {
                     color: #333333;
                 }
                 .tog::before {
                     content: ' ';
-                    height: 30px;
-                    width: 30px;
+                    height: 35px;
+                    width: 35px;
                     position: absolute;
                     top: 50%;
+                    left: 50%;
                     transform: translate(-50%, -50%);
                     border-radius: 50%;
                     background-color: #333333;
@@ -59,42 +71,59 @@
                 }
                 .tog.active::before {
                     background-color: #ffffff;
+                    box-shadow: 0 0 5px rgba(0,0,0,0.2);
                 }
+                
                 #display {
-                    margin: 0 10px;
+                    width: 100%;
+                    /* Khôi phục chiều cao cũ 150px */
                     height: 150px;
-                    width: auto;
-                    max-width: 270px;
-                    display: flex;
-                    align-items: flex-end;
-                    justify-content: flex-end;
-                    font-size: 30px;
+                    display: block; 
+                    text-align: right;
+                    /* Căn giữa dòng chữ theo chiều dọc */
+                    line-height: 150px;
+                    font-size: 3rem;
                     margin-bottom: 20px;
                     overflow-x: auto;
                     color: #0a1e23;
+                    white-space: nowrap;
+                    padding-right: 5px;
                 }
                 #display::-webkit-scrollbar {
                     height: 3px;
                 }
+                
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                td {
+                    width: 25%;
+                    padding: 5px;
+                }
+                
                 button {
-                    height: 60px;
-                    width: 60px;
+                    width: 100%;
+                    aspect-ratio: 1;
                     border: 0;
-                    border-radius: 30px;
-                    margin: 5px;
-                    font-size: 20px;
+                    border-radius: 50%;
+                    font-size: 1.5rem;
+                    font-weight: 600;
                     cursor: pointer;
-                    transition: all 200ms ease;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
-                button:hover {
-                    transform: scale(1.1);
+                button:active {
+                    transform: scale(0.9);
                 }
+                
                 button#clear {
                     background-color: #ffd5d8;
                     color: #fc4552;
                 }
                 button.btn-n {
-                    background-color: #c3eaff;
+                    background-color: #f0f3f7;
                     color: #000;
                 }
                 button.btn-o {
@@ -106,6 +135,7 @@
                     color: #000;
                 }
             }
+            
             .cal.dark {
                 background-color: #071115;
                 #display {
@@ -129,29 +159,12 @@
                 }
             }
         }
-        @media (max-width: 400px) {
-            .container .cal {
-                width: 95vw;
-                padding: 10px;
-                button {
-                    height: 50px;
-                    width: 50px;
-                    margin: 4px;
-                    font-size: 18px;
-                }
-                #display {
-                    height: 100px;
-                    font-size: 24px;
-                }
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="cal dark">
             <div class="tog active">
-                <i class="toggler-icon"></i>
             </div>
             <div class="display-screen">
                 <div id="display"></div>
@@ -197,6 +210,7 @@
 
         function add(v) {
             screen.innerText += v;
+            screen.scrollLeft = screen.scrollWidth;
         }
 
         function cls() {
@@ -220,14 +234,17 @@
             let val = screen.innerText;
             if (check(val)) {
                 let res = eval(val);
-                screen.innerText = res;
-            } else {
-                if (val === '') {
-                    screen.innerText = 'Empty!';
+                if (isNaN(res) || !isFinite(res)) {
+                    screen.innerText = 'Invalid';
+                    setTimeout(cls, 1000);
                 } else {
+                    screen.innerText = res;
+                    screen.scrollLeft = 0;
+                }
+            } else {
+                if (val !== '') {
                     err();
                 }
-                setTimeout(cls, 1000);
             }
         }
 
@@ -235,7 +252,13 @@
             let val = screen.innerText;
             if (check(val)) {
                 let res = eval(val) / 100;
-                screen.innerText = res;
+                if (isNaN(res) || !isFinite(res)) {
+                    screen.innerText = 'Invalid';
+                    setTimeout(cls, 1000);
+                } else {
+                    screen.innerText = res;
+                    screen.scrollLeft = 0;
+                }
             } else {
                 err();
             }
@@ -248,14 +271,26 @@
                 return;
             }
             let last = val.slice(-1);
-            if (['+', '-', '*', '/'].includes(last)) {
+            let prev = val.slice(-2, -1);
+            let ops = ['+', '-', '*', '/'];
+
+            if (last === '-' && (ops.includes(prev) || val.length === 1)) {
+                screen.innerText = val.slice(0, -1);
+                return;
+            }
+            if (ops.includes(last)) {
                 screen.innerText += '-';
-            } else {
-                if (check(val)) {
-                    let res = eval(val) * -1;
-                    screen.innerText = res;
+                screen.scrollLeft = screen.scrollWidth;
+                return;
+            }
+            if (check(val)) {
+                let res = eval(val) * -1;
+                if (isNaN(res) || !isFinite(res)) {
+                    screen.innerText = 'Invalid';
+                    setTimeout(cls, 1000);
                 } else {
-                    screen.innerText += '-';
+                    screen.innerText = res;
+                    screen.scrollLeft = 0;
                 }
             }
         }
