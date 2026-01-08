@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS6</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            outline: 0;
+            transition: all 0.5s ease;
+        }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-image: linear-gradient(to bottom right, rgba(79, 51, 176, 1), rgb(210, 53, 165));
+            min-height: 100vh;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .container {
+            min-height: 100vh;
+            width: 100vw;
+            display: grid;
+            place-items: center;
+            .cal {
+                position: relative;
+                height: auto;
+                width: auto;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 30px #000;
+                background-color: #ffffff;
+                .theme-toggler {
+                    position: absolute;
+                    top: 30px;
+                    right: 30px;
+                    color: #ffffff;
+                    cursor: pointer;
+                    z-index: 1;
+                }
+                .theme-toggler.active {
+                    color: #333333;
+                }
+                .theme-toggler::before {
+                    content: ' ';
+                    height: 30px;
+                    width: 30px;
+                    position: absolute;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    border-radius: 50%;
+                    background-color: #333333;
+                    z-index: -1;
+                }
+                .theme-toggler.active::before {
+                    background-color: #ffffff;
+                }
+                #display {
+                    margin: 0 10px;
+                    height: 150px;
+                    width: auto;
+                    max-width: 270px;
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: flex-end;
+                    font-size: 30px;
+                    margin-bottom: 20px;
+                    overflow-x: auto;
+                    color: #0a1e23;
+                }
+                #display::-webkit-scrollbar {
+                    height: 3px;
+                }
+                button {
+                    height: 60px;
+                    width: 60px;
+                    border: 0;
+                    border-radius: 30px;
+                    margin: 5px;
+                    font-size: 20px;
+                    cursor: pointer;
+                    transition: all 200ms ease;
+                }
+                button:hover {
+                    transform: scale(1.1);
+                }
+                button#clear {
+                    background-color: #ffd5d8;
+                    color: #fc4552;
+                }
+                button.btn-number {
+                    background-color: #c3eaff;
+                    color: #000;
+                }
+                button.btn-operator {
+                    background-color: #ffd0fd;
+                    color: #f967f3;
+                }
+                button.btn-equal {
+                    background-color: #adf9e7;
+                    color: #000;
+                }
+            }
+            .cal.dark {
+                background-color: #071115;
+                #display {
+                    color: #f8fafd;
+                }
+                button#clear {
+                    background-color: #2d191e;
+                    color: #bd3740;
+                }
+                button.btn-number {
+                    background-color: #1b2f38;
+                    color: #f8fafb;
+                }
+                button.btn-operator {
+                    background-color: #2e1f39;
+                    color: #aa00a4;
+                }
+                button.btn-equal {
+                    background-color: #223323;
+                    color: #ffffff;
+                }
+            }
+        }
+        @media (max-width: 400px) {
+            .container .cal {
+                width: 95vw;
+                padding: 10px;
+                button {
+                    height: 50px;
+                    width: 50px;
+                    margin: 4px;
+                    font-size: 18px;
+                }
+                #display {
+                    height: 100px;
+                    font-size: 24px;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cal dark">
+            <div class="theme-toggler active">
+                <i class="toggler-icon"></i>
+            </div>
+            <div class="display-screen">
+                <div id="display"></div>
+            </div>
+            <div class="buttons">
+                <table>
+                    <tr>
+                        <td><button class="btn-operator" id="clear" onclick="cls()">C</button></td>
+                        <td><button class="btn-operator" id="invert" onclick="inv()">+/-</button></td>
+                        <td><button class="btn-operator" id="backspace" onclick="del()">&#9003;</button></td>
+                        <td><button class="btn-operator" id="/" onclick="add('/')">&divide;</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn-number" id="7" onclick="add('7')">7</button></td>
+                        <td><button class="btn-number" id="8" onclick="add('8')">8</button></td>
+                        <td><button class="btn-number" id="9" onclick="add('9')">9</button></td>
+                        <td><button class="btn-operator" id="*" onclick="add('*')">&times;</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn-number" id="4" onclick="add('4')">4</button></td>
+                        <td><button class="btn-number" id="5" onclick="add('5')">5</button></td>
+                        <td><button class="btn-number" id="6" onclick="add('6')">6</button></td>
+                        <td><button class="btn-operator" id="-" onclick="add('-')">-</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn-number" id="1" onclick="add('1')">1</button></td>
+                        <td><button class="btn-number" id="2" onclick="add('2')">2</button></td>
+                        <td><button class="btn-number" id="3" onclick="add('3')">3</button></td>
+                        <td><button class="btn-operator" id="+" onclick="add('+')">+</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="btn-operator" id="%" onclick="perc()">%</button></td>
+                        <td><button class="btn-number" id="0" onclick="add('0')">0</button></td>
+                        <td><button class="btn-number" id="." onclick="add('.')">.</button></td>
+                        <td><button class="btn-equal" id="equal" onclick="calc()">=</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        const screen = document.querySelector('#display');
+
+        function add(v) {
+            screen.innerText += v;
+        }
+
+        function cls() {
+            screen.innerText = '';
+        }
+
+        function del() {
+            let val = screen.innerText;
+            screen.innerText = val.slice(0, -1);
+        }
+
+        function check(v) {
+            if (v === '') return false;
+            if (v.includes('++') || v.includes('--') || v.includes('..') || v.includes('//')) return false;
+            let last = v.slice(-1);
+            if (['+', '-', '*', '/', '.'].includes(last)) return false;
+            return true;
+        }
+
+        function calc() {
+            let val = screen.innerText;
+            if (check(val)) {
+                let res = eval(val);
+                screen.innerText = res;
+            } else {
+                if (val === '') {
+                    screen.innerText = 'Empty!';
+                } else {
+                    err();
+                }
+                setTimeout(cls, 1000);
+            }
+        }
+
+        function perc() {
+            let val = screen.innerText;
+            if (check(val)) {
+                let res = eval(val) / 100;
+                screen.innerText = res;
+            } else {
+                err();
+            }
+        }
+
+        function inv() {
+            let val = screen.innerText;
+            if (val === '') {
+                screen.innerText = '-';
+                return;
+            }
+            let last = val.slice(-1);
+            if (['+', '-', '*', '/'].includes(last)) {
+                screen.innerText += '-';
+            } else {
+                if (check(val)) {
+                    let res = eval(val) * -1;
+                    screen.innerText = res;
+                } else {
+                    screen.innerText += '-';
+                }
+            }
+        }
+
+        function err() {
+            screen.innerText = 'Error';
+            setTimeout(cls, 1000);
+        }
+
+        const toggler = document.querySelector('.theme-toggler');
+        const cal = document.querySelector('.cal');
+
+        toggler.onclick = function() {
+            cal.classList.toggle('dark');
+            toggler.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
