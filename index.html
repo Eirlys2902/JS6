@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS6</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>May Tinh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        
         * {
             padding: 0;
             margin: 0;
@@ -16,29 +15,31 @@
             outline: 0;
             transition: all 0.2s ease;
         }
+
         body {
             font-family: 'Nunito', sans-serif;
             background-image: linear-gradient(to bottom right, rgb(168, 148, 238), rgb(248, 160, 223));
-            min-height: 100vh;
+            height: 100vh;
             background-repeat: no-repeat;
             background-attachment: fixed;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
+
         .container {
             width: 100%;
             height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
-                
         .cal {
             position: relative;
-            width: 90%;
-            max-width: 350px; 
+            width: 360px; 
             padding: 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -58,64 +59,71 @@
             width: 30px;
             height: 30px;
         }
+
         .tog.active {
             color: #333333;
         }
+
         .tog::before {
             content: ' ';
             height: 35px;
             width: 35px;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: -2.5px; 
+            left: -2.5px;
             border-radius: 50%;
             background-color: #333333;
             z-index: -1;
         }
+
         .tog.active::before {
             background-color: #ffffff;
             box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
 
         #display {
-            width: 100%;
+            width: 320px; 
             height: 150px;
             display: block; 
             text-align: right;
             line-height: 150px;
-            font-size: 3rem;
+            font-size: 48px; 
             margin-bottom: 20px;
             overflow-x: auto;
             color: #0a1e23;
             white-space: nowrap;
             padding-right: 5px;
+            scrollbar-width: none; 
         }
+
         #display::-webkit-scrollbar {
-            height: 3px;
+            display: none;
         }
 
         table {
-            width: 100%;
+            width: 320px;
             border-collapse: collapse;
         }
+
         td {
-            width: 25%;
+            width: 80px;
             padding: 5px;
         }
 
         button {
-            width: 100%;
-            aspect-ratio: 1;
+            width: 70px;
+            height: 70px;
             border: 0;
-            border-radius: 50%;
-            font-size: 1.5rem;
+            border-radius: 35px;
+            font-size: 24px; 
             font-weight: 600;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
+            touch-action: manipulation; 
         }
+
         button:active {
             transform: scale(0.9);
         }
@@ -124,39 +132,73 @@
             background-color: #ffd5d8;
             color: #fc4552;
         }
+
         button.btn-n {
             background-color: #f0f3f7;
             color: #000;
         }
+
         button.btn-o {
             background-color: #ffd0fd;
             color: #f967f3;
         }
+
         button.btn-equal {
             background-color: #adf9e7;
             color: #000;
         }
+
         .cal.dark {
             background-color: #071115;
         }
+
         .cal.dark #display {
             color: #f8fafd;
         }
-        .cal.dark #clear {
+
+        .cal.dark button#clear {
             background-color: #2d191e;
             color: #bd3740;
         }
-        .cal.dark .btn-n {
+
+        .cal.dark button.btn-n {
             background-color: #1b2f38;
             color: #f8fafb;
         }
-        .cal.dark .btn-o {
+
+        .cal.dark button.btn-o {
             background-color: #2e1f39;
             color: #aa00a4;
         }
-        .cal.dark .btn-equal {
+
+        .cal.dark button.btn-equal {
             background-color: #223323;
             color: #ffffff;
+        }
+
+        @media (max-width: 400px) {
+            .cal {
+                width: 300px;
+                padding: 15px;
+            }
+            #display {
+                width: 270px;
+                font-size: 40px;
+                margin-bottom: 10px;
+            }
+            table {
+                width: 270px;
+            }
+            td {
+                width: 67.5px;
+                padding: 3px;
+            }
+            button {
+                width: 60px;
+                height: 60px;
+                border-radius: 30px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -207,7 +249,15 @@
     <script>
         const screen = document.querySelector('#display');
 
+        function isErrorState() {
+            const val = screen.innerText;
+            return val === 'Invalid' || val === 'Error' || val === 'Empty!' || val === 'NaN' || val === 'Infinity';
+        }
+
         function add(v) {
+            if (isErrorState()) {
+                screen.innerText = '';
+            }
             screen.innerText += v;
             screen.scrollLeft = screen.scrollWidth;
         }
@@ -217,15 +267,26 @@
         }
 
         function del() {
-            let val = screen.innerText;
-            screen.innerText = val.slice(0, -1);
+            if (isErrorState()) {
+                screen.innerText = '';
+            } else {
+                let val = screen.innerText;
+                screen.innerText = val.slice(0, -1);
+            }
         }
 
         function check(v) {
             if (v === '') return false;
+            if (isErrorState()) return false; 
+            
+            const validChars = /^[0-9+\-*/.()]+$/;
+            if (!validChars.test(v)) return false;
+
             if (v.includes('++') || v.includes('--') || v.includes('..') || v.includes('//')) return false;
+            
             let last = v.slice(-1);
             if (['+', '-', '*', '/', '.'].includes(last)) return false;
+            
             return true;
         }
 
@@ -235,7 +296,6 @@
                 let res = eval(val);
                 if (isNaN(res) || !isFinite(res)) {
                     screen.innerText = 'Invalid';
-                    setTimeout(cls, 1000);
                 } else {
                     screen.innerText = res;
                     screen.scrollLeft = 0;
@@ -253,7 +313,6 @@
                 let res = eval(val) / 100;
                 if (isNaN(res) || !isFinite(res)) {
                     screen.innerText = 'Invalid';
-                    setTimeout(cls, 1000);
                 } else {
                     screen.innerText = res;
                     screen.scrollLeft = 0;
@@ -264,39 +323,46 @@
         }
 
         function inv() {
+            if (isErrorState()) return; 
+            
             let val = screen.innerText;
             if (val === '') {
                 screen.innerText = '-';
                 return;
             }
-            let last = val.slice(-1);
-            let prev = val.slice(-2, -1);
-            let ops = ['+', '-', '*', '/'];
+            
+            let operators = ['+', '-', '*', '/'];
+            let lastOpIndex = -1;
 
-            if (last === '-' && (ops.includes(prev) || val.length === 1)) {
-                screen.innerText = val.slice(0, -1);
-                return;
+            for (let i = val.length - 1; i >= 0; i--) {
+                if (operators.includes(val[i])) {
+                    if (val[i] === '-') {
+                        if (i === 0 || operators.includes(val[i-1])) {
+                            continue;
+                        }
+                    }
+                    lastOpIndex = i;
+                    break;
+                }
             }
-            if (ops.includes(last)) {
-                screen.innerText += '-';
-                screen.scrollLeft = screen.scrollWidth;
-                return;
-            }
-            if (check(val)) {
-                let res = eval(val) * -1;
-                if (isNaN(res) || !isFinite(res)) {
-                    screen.innerText = 'Invalid';
-                    setTimeout(cls, 1000);
+
+            if (lastOpIndex === -1) {
+                screen.innerText = String(Number(val) * -1);
+            } else {
+                let part1 = val.slice(0, lastOpIndex + 1);
+                let part2 = val.slice(lastOpIndex + 1);
+
+                if (part2 === '') {
+                    screen.innerText += '-';
                 } else {
-                    screen.innerText = res;
-                    screen.scrollLeft = 0;
+                    let num = Number(part2);
+                    screen.innerText = part1 + (num * -1);
                 }
             }
         }
 
         function err() {
             screen.innerText = 'Error';
-            setTimeout(cls, 1000);
         }
 
         const toggler = document.querySelector('.tog');
